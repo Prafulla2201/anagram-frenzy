@@ -1,0 +1,996 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AnagramFrenzy v1.3 — Isomeric Word Discovery &amp; Lexicon Game</title>
+    <style>
+        :root {
+            --bg-dark: #0f172a;
+            --bg-card: #1e293b;
+            --bg-deep: #090d16;
+            --border: #334155;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --accent-indigo: #6366f1;
+            --accent-cyan: #06b6d4;
+            --accent-emerald: #10b981;
+            --accent-amber: #f59e0b;
+            --accent-rose: #f43f5e;
+        }
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            background: radial-gradient(circle at top right, #1e1b4b, var(--bg-dark) 55%);
+            color: var(--text-main);
+            min-height: 100vh;
+            padding: 28px 20px;
+            line-height: 1.5;
+        }
+        .app-shell {
+            max-width: 1120px;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            gap: 22px;
+        }
+        .top-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 16px;
+            background: rgba(30, 41, 59, 0.85);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 18px 24px;
+            backdrop-filter: blur(10px);
+        }
+        .brand-title {
+            font-size: 22px;
+            font-weight: 800;
+            letter-spacing: -0.02em;
+            background: linear-gradient(90deg, #818cf8, #22d3ee);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .brand-sub {
+            font-size: 13px;
+            color: var(--text-muted);
+            margin-top: 2px;
+        }
+        .stats-bar {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        .stat-pill {
+            background: var(--bg-deep);
+            border: 1px solid var(--border);
+            border-radius: 999px;
+            padding: 7px 15px;
+            font-size: 12.5px;
+            font-weight: 700;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .stat-pill.score {
+            border-color: rgba(16, 185, 129, 0.45);
+            color: var(--accent-emerald);
+        }
+        .stat-pill.shelved {
+            border-color: rgba(245, 158, 11, 0.45);
+            color: var(--accent-amber);
+        }
+        .main-grid {
+            display: grid;
+            grid-template-columns: 1.55fr 1fr;
+            gap: 22px;
+            align-items: start;
+        }
+        @media (max-width: 880px) {
+            .main-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+        .card {
+            background: rgba(30, 41, 59, 0.88);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 24px;
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.25);
+        }
+        .step-badge {
+            display: inline-block;
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+            color: var(--accent-cyan);
+            background: rgba(6, 182, 212, 0.12);
+            border: 1px solid rgba(6, 182, 212, 0.3);
+            border-radius: 999px;
+            padding: 4px 12px;
+            margin-bottom: 12px;
+        }
+        .card-title {
+            font-size: 19px;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+        .card-desc {
+            font-size: 13.5px;
+            color: var(--text-muted);
+            margin-bottom: 18px;
+        }
+        .input-row {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+        input[type="text"] {
+            flex: 1;
+            min-width: 210px;
+            background: var(--bg-deep);
+            border: 1px solid var(--border);
+            border-radius: 11px;
+            color: var(--text-main);
+            padding: 12px 16px;
+            font-size: 15px;
+            font-weight: 600;
+            outline: none;
+            transition: border-color 0.15s;
+        }
+        input[type="text"]:focus {
+            border-color: var(--accent-cyan);
+        }
+        button {
+            cursor: pointer;
+            border: 1px solid var(--border);
+            border-radius: 11px;
+            padding: 11px 18px;
+            font-size: 13.5px;
+            font-weight: 700;
+            background: var(--bg-deep);
+            color: var(--text-main);
+            transition: all 0.15s ease;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 7px;
+        }
+        button:hover {
+            border-color: var(--accent-cyan);
+            transform: translateY(-1px);
+        }
+        .btn-primary {
+            background: linear-gradient(135deg, var(--accent-indigo), var(--accent-cyan));
+            border: none;
+            color: #ffffff;
+        }
+        .btn-emerald {
+            background: rgba(16, 185, 129, 0.16);
+            border-color: rgba(16, 185, 129, 0.5);
+            color: #34d399;
+        }
+        .btn-amber {
+            background: rgba(245, 158, 11, 0.16);
+            border-color: rgba(245, 158, 11, 0.5);
+            color: #fbbf24;
+        }
+        .starter-chips {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            margin-top: 14px;
+            align-items: center;
+        }
+        .chip-btn {
+            padding: 6px 12px;
+            font-size: 12px;
+            border-radius: 999px;
+            background: rgba(99, 102, 241, 0.12);
+            border-color: rgba(99, 102, 241, 0.35);
+            color: #c7d2fe;
+        }
+        .error-banner {
+            margin-top: 14px;
+            background: rgba(244, 63, 94, 0.12);
+            border: 1px solid rgba(244, 63, 94, 0.45);
+            color: #fda4af;
+            border-radius: 12px;
+            padding: 12px 16px;
+            font-size: 13px;
+            font-weight: 600;
+            display: none;
+        }
+        .analysis-banner {
+            margin-top: 20px;
+            background: rgba(6, 182, 212, 0.08);
+            border: 1px solid rgba(6, 182, 212, 0.35);
+            border-radius: 14px;
+            padding: 18px 20px;
+            display: none;
+        }
+        .count-highlight {
+            font-size: 32px;
+            font-weight: 800;
+            color: var(--accent-cyan);
+            line-height: 1.1;
+        }
+        .letter-tiles {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            margin: 14px 0;
+        }
+        .letter-tile {
+            width: 42px;
+            height: 46px;
+            border-radius: 10px;
+            background: var(--bg-deep);
+            border: 1px solid var(--accent-indigo);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 19px;
+            font-weight: 800;
+            color: #e0e7ff;
+            text-transform: uppercase;
+            box-shadow: inset 0 -2px 0 rgba(99, 102, 241, 0.4);
+        }
+        .targets-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(175px, 1fr));
+            gap: 10px;
+            margin-top: 14px;
+        }
+        .target-slot {
+            background: var(--bg-deep);
+            border: 1px dashed var(--border);
+            border-radius: 11px;
+            padding: 11px 14px;
+            font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+            font-size: 13px;
+            font-weight: 700;
+            color: var(--text-muted);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 8px;
+        }
+        .target-slot.unlocked {
+            cursor: pointer;
+            border-style: solid;
+            border-color: rgba(16, 185, 129, 0.55);
+            background: rgba(16, 185, 129, 0.12);
+            color: #34d399;
+            text-transform: uppercase;
+            transition: all 0.15s ease;
+        }
+        .target-slot.unlocked:hover {
+            border-color: var(--accent-cyan);
+            background: rgba(6, 182, 212, 0.18);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(6, 182, 212, 0.18);
+        }
+        .target-slot.unlocked.active-meaning {
+            border-color: var(--accent-cyan);
+            box-shadow: 0 0 0 2px rgba(6, 182, 212, 0.35);
+        }
+        .meaning-badge-hint {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+            font-size: 10.5px;
+            font-weight: 700;
+            text-transform: none;
+            color: #67e8f9;
+            background: rgba(6, 182, 212, 0.16);
+            border: 1px solid rgba(6, 182, 212, 0.35);
+            padding: 2px 7px;
+            border-radius: 999px;
+            white-space: nowrap;
+        }
+        .meaning-drawer {
+            margin-top: 16px;
+            background: linear-gradient(135deg, rgba(30, 27, 75, 0.92), rgba(15, 23, 42, 0.95));
+            border: 1px solid rgba(6, 182, 212, 0.5);
+            border-radius: 14px;
+            padding: 16px 18px;
+            display: none;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+        }
+        .meaning-pos-pill {
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            color: #c7d2fe;
+            background: rgba(99, 102, 241, 0.25);
+            border: 1px solid rgba(99, 102, 241, 0.45);
+            border-radius: 999px;
+            padding: 2px 10px;
+        }
+        .feedback-box {
+            margin-top: 14px;
+            padding: 11px 15px;
+            border-radius: 10px;
+            font-size: 13px;
+            font-weight: 600;
+            display: none;
+        }
+        .feedback-box.ok {
+            display: block;
+            background: rgba(16, 185, 129, 0.14);
+            border: 1px solid rgba(16, 185, 129, 0.45);
+            color: #6ee7b7;
+        }
+        .feedback-box.warn {
+            display: block;
+            background: rgba(245, 158, 11, 0.14);
+            border: 1px solid rgba(245, 158, 11, 0.45);
+            color: #fcd34d;
+        }
+        .shelf-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-top: 12px;
+        }
+        .shelf-item {
+            background: var(--bg-deep);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 12px 14px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 10px;
+        }
+        .completed-tags {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            margin-top: 10px;
+        }
+        .completed-tag {
+            background: rgba(16, 185, 129, 0.14);
+            border: 1px solid rgba(16, 185, 129, 0.4);
+            color: #34d399;
+            padding: 5px 11px;
+            border-radius: 999px;
+            font-size: 12px;
+            font-weight: 700;
+            text-transform: uppercase;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <div class="app-shell">
+        <!-- Top Header & Live Scoreboard -->
+        <header class="top-bar">
+            <div>
+                <div class="brand-title">🔤 AnagramFrenzy <span style="font-size: 12px; color: var(--accent-cyan); font-weight: 700;">v1.3</span></div>
+                <div class="brand-sub">Strict English Dictionary Validation • Isomeric Word Discovery • Click Any Unlocked Anagram for Its Meaning</div>
+            </div>
+            <div class="stats-bar">
+                <div class="stat-pill" style="border-color: rgba(245, 158, 11, 0.45); color: var(--accent-amber);">
+                    🔥 Streak: <span id="stat-daily-streak">0</span> days
+                </div>
+                <div class="stat-pill score">🏆 Score: <span id="stat-score">0</span> pts</div>
+                <div class="stat-pill">✅ Solved: <span id="stat-completed-count">0</span></div>
+                <div class="stat-pill shelved">📌 Shelved: <span id="stat-shelved-count">0</span></div>
+                <button onclick="resetGameSession()" style="padding: 6px 12px; font-size: 12px;">↺ Reset</button>
+            </div>
+        </header>
+
+        <!-- Daily Challenge Hero Banner -->
+        <div id="daily-challenge-card" style="background: linear-gradient(135deg, rgba(99, 102, 241, 0.15), rgba(6, 182, 212, 0.15)); border: 1px solid rgba(99, 102, 241, 0.4); border-radius: 16px; padding: 18px 22px; display: flex; justify-content: space-between; align-items: center; gap: 16px; flex-wrap: wrap;">
+            <div style="flex: 1; min-width: 260px;">
+                <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 4px;">
+                    <span style="background: var(--accent-indigo); color: #fff; font-size: 10.5px; font-weight: 800; padding: 2px 8px; border-radius: 6px; text-transform: uppercase; letter-spacing: 0.05em;">TODAY'S DAILY CHALLENGE</span>
+                    <span id="daily-puzzle-no" style="font-size: 12px; color: var(--accent-cyan); font-weight: 700;">Puzzle #1</span>
+                    <span id="daily-date-badge" style="font-size: 11.5px; color: var(--text-muted);"></span>
+                </div>
+                <div style="font-size: 18px; font-weight: 800; color: #fff; margin-bottom: 2px;">
+                    Word: <span id="daily-word-title" style="color: var(--accent-cyan); letter-spacing: 0.05em; text-transform: uppercase;">LISTEN</span>
+                    <span style="font-size: 13px; font-weight: 600; color: var(--text-muted); margin-left: 8px;" id="daily-theme-text">(Classic Harmony)</span>
+                </div>
+                <div style="font-size: 12.5px; color: #cbd5e1;">
+                    Can you find all <strong id="daily-target-count" style="color: var(--accent-emerald);">4</strong> dictionary anagrams? Keep your daily streak alive!
+                </div>
+            </div>
+            <div style="display: flex; gap: 10px; align-items: center;">
+                <button class="btn-primary" id="btn-play-daily" onclick="startDailyChallenge()" style="padding: 10px 18px; font-size: 13px; font-weight: 700;">
+                    ⚡ Play Daily Challenge
+                </button>
+                <button id="btn-share-daily" onclick="shareDailyResults()" style="display: none; padding: 10px 14px; font-size: 13px; font-weight: 700; background: rgba(16, 185, 129, 0.2); border: 1px solid var(--accent-emerald); color: var(--accent-emerald);">
+                    📤 Share Score
+                </button>
+            </div>
+        </div>
+
+        <div class="main-grid">
+            <!-- Left Column: Page 1 (Word Entry & Isomeric Count) & Page 2 (Isomeric Guessing Arena + Meaning Inspector) -->
+            <div>
+                <!-- PAGE 1: WORD ENTRY & ISOMERIC COUNT DISCOVERY -->
+                <section class="card" id="page-word-entry">
+                    <span class="step-badge">Page 1 • Valid English Word Entry &amp; Isomeric Count</span>
+                    <h1 class="card-title">Enter Any Valid English Word</h1>
+                    <p class="card-desc">
+                        Submit a valid English dictionary word below. Non-dictionary or gibberish strings are automatically rejected.
+                        Once verified, we will show how many isomeric dictionary words can be formed by rearranging its letters.
+                    </p>
+
+                    <div class="input-row">
+                        <input type="text" id="word-input" placeholder="Type a valid English word (e.g., listen, earth, stop, least)...">
+                        <button class="btn-primary" id="btn-analyze-word" onclick="submitWordForAnalysis()">
+                            🔍 Analyze Word
+                        </button>
+                    </div>
+
+                    <div id="word-entry-error" class="error-banner"></div>
+
+                    <div class="starter-chips">
+                        <span style="font-size: 12px; color: var(--text-muted);">Quick Valid Starters:</span>
+                        <button class="chip-btn" onclick="pickStarterWord('listen')">LISTEN (4)</button>
+                        <button class="chip-btn" onclick="pickStarterWord('least')">LEAST (5)</button>
+                        <button class="chip-btn" onclick="pickStarterWord('stop')">STOP (5)</button>
+                        <button class="chip-btn" onclick="pickStarterWord('earth')">EARTH (3)</button>
+                        <button class="chip-btn" onclick="pickStarterWord('caret')">CARET (5)</button>
+                        <button class="chip-btn" onclick="pickStarterWord('spare')">SPARE (7)</button>
+                    </div>
+
+                    <!-- Analysis Result Banner with Base Word Meaning & Button to Proceed to Guessing Arena -->
+                    <div class="analysis-banner" id="analysis-result-banner">
+                        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 14px;">
+                            <div style="flex: 1; min-width: 240px;">
+                                <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
+                                    <span style="font-size: 12px; color: var(--accent-emerald); text-transform: uppercase; font-weight: 800;">
+                                        ✓ Verified English Word: <span id="analyzed-word-label" style="color: var(--text-main);">LISTEN</span>
+                                    </span>
+                                    <span class="meaning-pos-pill" id="analyzed-word-pos">verb / noun</span>
+                                </div>
+                                <div style="font-size: 12.5px; color: #cbd5e1; margin-top: 4px; font-style: italic;" id="analyzed-word-def"></div>
+                                <div class="count-highlight" style="margin-top: 10px;">
+                                    <span id="analyzed-isomeric-count">4</span> Isomeric Dictionary Words
+                                </div>
+                                <div style="font-size: 12.5px; color: var(--text-muted); margin-top: 4px;" id="analyzed-subtext">
+                                    Formed by rearranging the exact letters of this word.
+                                </div>
+                            </div>
+                            <button class="btn-emerald" id="btn-go-guessing-page" onclick="openGuessingArenaPage()" style="padding: 13px 20px; font-size: 14px;">
+                                ▶️ Go to Isomeric Guessing Page →
+                            </button>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- PAGE 2: ISOMERIC WORD GUESSING ARENA + CLICK-TO-VIEW WORD MEANING -->
+                <section class="card" id="page-guessing-arena" style="display: none;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; margin-bottom: 10px;">
+                        <span class="step-badge" style="margin-bottom: 0;">Page 2 • Isomeric Word Guessing Arena</span>
+                        <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+                            <button class="btn-amber" id="btn-shelve-word" onclick="shelveActiveWord()" style="padding: 7px 14px; font-size: 12.5px;">
+                                📌 Shelve Word for Later &amp; Pick New Word
+                            </button>
+                            <button class="btn-emerald" id="btn-next-word" onclick="goToNewWordEntry()" style="display: none; padding: 7px 14px; font-size: 12.5px;">
+                                ✨ Completed! Enter Next New Word →
+                            </button>
+                        </div>
+                    </div>
+
+                    <div style="display: flex; justify-content: space-between; align-items: baseline; flex-wrap: wrap; gap: 12px;">
+                        <div>
+                            <h2 class="card-title" style="margin-bottom: 2px;">
+                                Base Word:
+                                <span id="arena-base-word" style="color: var(--accent-cyan); text-transform: uppercase; cursor: pointer; text-decoration: underline dotted;" onclick="inspectUnlockedWordMeaning(activeWordState ? activeWordState.word : '')" title="Click to view base word meaning">LISTEN</span>
+                            </h2>
+                            <p style="font-size: 13px; color: var(--text-muted);">
+                                Rearrange the letters below to guess all <strong id="arena-total-targets" style="color: var(--text-main);">4</strong> valid English dictionary anagrams.
+                            </p>
+                        </div>
+                        <div class="stat-pill" style="font-size: 13px;">
+                            Progress: <span id="arena-found-count" style="color: var(--accent-emerald);">0</span> / <span id="arena-total-count">4</span> Found
+                        </div>
+                    </div>
+
+                    <!-- Scrambled Letter Tiles + Shuffle Helper -->
+                    <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px;">
+                        <div class="letter-tiles" id="arena-letter-tiles"></div>
+                        <div style="display: flex; gap: 8px;">
+                            <button onclick="shuffleLetterTiles()" style="padding: 7px 12px; font-size: 12px;">🔀 Shuffle Tiles</button>
+                            <button onclick="requestWordHint()" style="padding: 7px 12px; font-size: 12px;">💡 Get Hint</button>
+                        </div>
+                    </div>
+
+                    <!-- Guess Input Form -->
+                    <div class="input-row" style="margin-top: 6px;">
+                        <input type="text" id="guess-input" placeholder="Type a valid English anagram word...">
+                        <button class="btn-primary" id="btn-submit-guess" onclick="submitIsomericGuess()">
+                            ✅ Submit Guess
+                        </button>
+                    </div>
+
+                    <div id="guess-feedback-box" class="feedback-box"></div>
+
+                    <!-- Masked / Unlocked Isomeric Slots (Click any unlocked word to view its meaning!) -->
+                    <div style="margin-top: 20px;">
+                        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 6px;">
+                            <div style="font-size: 12px; font-weight: 700; text-transform: uppercase; color: var(--text-muted);">
+                                Isomeric Word Slots
+                            </div>
+                            <div style="font-size: 12px; color: var(--accent-cyan); font-weight: 600;">
+                                📖 Tip: Click any unlocked green word below to view its dictionary meaning!
+                            </div>
+                        </div>
+                        <div class="targets-grid" id="arena-targets-grid"></div>
+                    </div>
+
+                    <!-- Interactive Word Meaning Inspector Card (Opens when user clicks an unlocked anagram word) -->
+                    <div class="meaning-drawer" id="word-meaning-drawer">
+                        <div style="display: flex; justify-content: space-between; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 8px;">
+                            <div style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap;">
+                                <span style="font-size: 18px; font-weight: 800; color: var(--accent-emerald); text-transform: uppercase;" id="meaning-word-title">SILENT</span>
+                                <span class="meaning-pos-pill" id="meaning-word-pos">adjective</span>
+                                <span style="font-size: 11px; color: var(--text-muted);" id="meaning-word-source">AnagramFrenzy Lexicon</span>
+                            </div>
+                            <button onclick="closeMeaningDrawer()" style="padding: 4px 10px; font-size: 11.5px;">✕ Close</button>
+                        </div>
+                        <div style="font-size: 14px; color: var(--text-main); line-height: 1.55; margin-bottom: 6px;" id="meaning-word-definition">
+                            Not making or accompanied by any sound; refraining from speech.
+                        </div>
+                        <div style="font-size: 12.5px; color: #94a3b8; font-style: italic;" id="meaning-word-example">
+                            Example: "The library remained completely silent during finals week."
+                        </div>
+                    </div>
+                </section>
+            </div>
+
+            <!-- Right Column: Shelved Words for Later & Completed Words -->
+            <div style="display: flex; flex-direction: column; gap: 22px;">
+                <section class="card">
+                    <span class="step-badge">Shelved Queue</span>
+                    <h3 class="card-title" style="font-size: 17px;">📌 Shelved Words for Later</h3>
+                    <p class="card-desc" style="margin-bottom: 12px;">
+                        Any word you shelve keeps its discovered anagrams intact. Click <strong>Resume</strong> to jump right back into guessing!
+                    </p>
+                    <div class="shelf-list" id="shelved-words-list">
+                        <div style="font-size: 13px; color: var(--text-muted); padding: 10px 0;">
+                            No words shelved yet. You can shelve your active word at any time to switch to a new word.
+                        </div>
+                    </div>
+                </section>
+
+                <section class="card">
+                    <span class="step-badge">Hall of Mastery</span>
+                    <h3 class="card-title" style="font-size: 17px;">🏆 Completed Word Families</h3>
+                    <p class="card-desc" style="margin-bottom: 10px;">
+                        Words where you found 100% of all valid dictionary rearrangements:
+                    </p>
+                    <div class="completed-tags" id="completed-words-list">
+                        <span style="font-size: 13px; color: var(--text-muted);">Complete your first word set to see it here!</span>
+                    </div>
+                </section>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let activeWordState = null;
+        let currentLetters = [];
+        let selectedMeaningWord = null;
+
+        function pickStarterWord(word) {
+            document.getElementById('word-input').value = word;
+            submitWordForAnalysis();
+        }
+
+        async function submitWordForAnalysis() {
+            const raw = document.getElementById('word-input').value.trim();
+            const errBanner = document.getElementById('word-entry-error');
+            const resBanner = document.getElementById('analysis-result-banner');
+
+            if (!raw) {
+                errBanner.textContent = '⚠️ Please enter an English word to analyze.';
+                errBanner.style.display = 'block';
+                resBanner.style.display = 'none';
+                return;
+            }
+
+            const res = await fetch('/api/word/analyze', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ word: raw })
+            });
+            const data = await res.json();
+            if (!data.valid) {
+                errBanner.textContent = '❌ ' + (data.error || 'Only valid English dictionary words are allowed.');
+                errBanner.style.display = 'block';
+                resBanner.style.display = 'none';
+                return;
+            }
+
+            errBanner.style.display = 'none';
+            activeWordState = data;
+            currentLetters = data.word.split('');
+            document.getElementById('analyzed-word-label').textContent = data.word.toUpperCase();
+
+            const wm = data.word_meaning || {};
+            document.getElementById('analyzed-word-pos').textContent = wm.part_of_speech || 'English word';
+            document.getElementById('analyzed-word-def').textContent = wm.definition ? `"${wm.definition}"` : '';
+
+            document.getElementById('analyzed-isomeric-count').textContent = data.total_isomeric_words;
+            document.getElementById('analyzed-subtext').textContent = data.total_isomeric_words > 0
+                ? `Found ${data.total_isomeric_words} valid English dictionary rearrangement(s) for "${data.word.toUpperCase()}".`
+                : `No other common English dictionary rearrangements exist for "${data.word.toUpperCase()}". Try another word or click a starter chip!`;
+
+            resBanner.style.display = 'block';
+            syncSidebarAndStats(data);
+        }
+
+        function openGuessingArenaPage() {
+            if (!activeWordState) return;
+            document.getElementById('page-word-entry').style.display = 'none';
+            document.getElementById('page-guessing-arena').style.display = 'block';
+            document.getElementById('guess-feedback-box').className = 'feedback-box';
+            document.getElementById('word-meaning-drawer').style.display = 'none';
+            selectedMeaningWord = null;
+            document.getElementById('guess-input').value = '';
+            renderGuessingArena(activeWordState);
+            document.getElementById('guess-input').focus();
+        }
+
+        function goToNewWordEntry() {
+            document.getElementById('page-guessing-arena').style.display = 'none';
+            document.getElementById('page-word-entry').style.display = 'block';
+            document.getElementById('analysis-result-banner').style.display = 'none';
+            document.getElementById('word-entry-error').style.display = 'none';
+            document.getElementById('word-input').value = '';
+            document.getElementById('word-input').focus();
+        }
+
+        function renderLetterTiles() {
+            const container = document.getElementById('arena-letter-tiles');
+            container.innerHTML = currentLetters
+                .map(ch => `<div class="letter-tile">${ch.toUpperCase()}</div>`)
+                .join('');
+        }
+
+        function shuffleLetterTiles() {
+            for (let i = currentLetters.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [currentLetters[i], currentLetters[j]] = [currentLetters[j], currentLetters[i]];
+            }
+            renderLetterTiles();
+        }
+
+        function renderGuessingArena(state) {
+            document.getElementById('arena-base-word').textContent = state.word.toUpperCase();
+            document.getElementById('arena-total-targets').textContent = state.total_isomeric_words;
+            document.getElementById('arena-found-count').textContent = (state.guessed_words || []).length;
+            document.getElementById('arena-total-count').textContent = state.total_isomeric_words;
+
+            renderLetterTiles();
+
+            const slotsGrid = document.getElementById('arena-targets-grid');
+            const masked = state.masked_targets || [];
+            const guessedSet = new Set(state.guessed_words || []);
+
+            if (masked.length === 0) {
+                slotsGrid.innerHTML = `<div style="grid-column: 1 / -1; color: var(--text-muted); font-size: 13px;">No other dictionary rearrangements exist for this word. Click "Shelve Word for Later & Pick New Word" above to try another word!</div>`;
+            } else {
+                slotsGrid.innerHTML = masked.map(item => {
+                    const isUnlocked = guessedSet.has(item);
+                    const isSelected = selectedMeaningWord === item;
+                    if (isUnlocked) {
+                        return `
+                            <div class="target-slot unlocked ${isSelected ? 'active-meaning' : ''}"
+                                 onclick="inspectUnlockedWordMeaning('${item}')"
+                                 title="Click to show dictionary meaning of ${item.toUpperCase()}">
+                                <span>✓ ${item.toUpperCase()}</span>
+                                <span class="meaning-badge-hint">📖 Meaning</span>
+                            </div>
+                        `;
+                    }
+                    return `
+                        <div class="target-slot">
+                            <span>${item}</span>
+                        </div>
+                    `;
+                }).join('');
+            }
+
+            const nextBtn = document.getElementById('btn-next-word');
+            if (state.is_completed || state.total_isomeric_words === 0) {
+                nextBtn.style.display = 'inline-flex';
+            } else {
+                nextBtn.style.display = 'none';
+            }
+            syncSidebarAndStats(state);
+        }
+
+        async function inspectUnlockedWordMeaning(word) {
+            if (!word) return;
+            selectedMeaningWord = word.toLowerCase();
+            if (activeWordState) {
+                renderGuessingArena(activeWordState);
+            }
+
+            const drawer = document.getElementById('word-meaning-drawer');
+            drawer.style.display = 'block';
+
+            // Check if meaning is already cached in activeWordState.unlocked_meanings
+            const cached = activeWordState && activeWordState.unlocked_meanings && activeWordState.unlocked_meanings[selectedMeaningWord];
+            if (cached) {
+                populateMeaningDrawer(cached);
+                return;
+            }
+
+            document.getElementById('meaning-word-title').textContent = selectedMeaningWord.toUpperCase();
+            document.getElementById('meaning-word-pos').textContent = 'Loading...';
+            document.getElementById('meaning-word-definition').textContent = 'Looking up dictionary definition...';
+            document.getElementById('meaning-word-example').textContent = '';
+
+            try {
+                const res = await fetch(`/api/word/meaning?word=${encodeURIComponent(selectedMeaningWord)}`);
+                const data = await res.json();
+                populateMeaningDrawer(data);
+            } catch (e) {
+                document.getElementById('meaning-word-definition').textContent = 'Could not load definition.';
+            }
+        }
+
+        function populateMeaningDrawer(info) {
+            if (!info) return;
+            document.getElementById('meaning-word-title').textContent = (info.word || '').toUpperCase();
+            document.getElementById('meaning-word-pos').textContent = info.part_of_speech || 'English word';
+            document.getElementById('meaning-word-source').textContent = info.source || 'Dictionary Lexicon';
+            document.getElementById('meaning-word-definition').textContent = info.definition || '';
+            document.getElementById('meaning-word-example').textContent = info.example
+                ? `Example: "${info.example}"`
+                : '';
+            document.getElementById('word-meaning-drawer').style.display = 'block';
+        }
+
+        function closeMeaningDrawer() {
+            document.getElementById('word-meaning-drawer').style.display = 'none';
+            selectedMeaningWord = null;
+            if (activeWordState) {
+                renderGuessingArena(activeWordState);
+            }
+        }
+
+        async function submitIsomericGuess() {
+            if (!activeWordState) return;
+            const input = document.getElementById('guess-input');
+            const guess = input.value.trim();
+            if (!guess) return;
+
+            const res = await fetch('/api/word/guess', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ word: activeWordState.word, guess })
+            });
+            const data = await res.json();
+            activeWordState = Object.assign({}, activeWordState, data);
+
+            const fb = document.getElementById('guess-feedback-box');
+            fb.textContent = data.feedback || '';
+            fb.className = 'feedback-box ' + (data.correct ? 'ok' : 'warn');
+
+            if (data.correct) {
+                input.value = '';
+            }
+            if (activeWordState.is_completed) {
+                onWordFamilyCompleted(activeWordState.word);
+            }
+            renderGuessingArena(activeWordState);
+        }
+
+        // --- Streak & Daily Challenge LocalStorage Engine ---
+        let currentDailyData = null;
+
+        function getStreakStats() {
+            try {
+                const raw = localStorage.getItem('anagramfrenzy_streak_stats');
+                if (raw) return JSON.parse(raw);
+            } catch (e) {}
+            return { streak: 0, last_completed_date: null, total_solved: 0 };
+        }
+
+        function saveStreakStats(stats) {
+            try {
+                localStorage.setItem('anagramfrenzy_streak_stats', JSON.stringify(stats));
+            } catch (e) {}
+        }
+
+        function renderStreakUI() {
+            const stats = getStreakStats();
+            const el = document.getElementById('stat-daily-streak');
+            if (el) el.textContent = stats.streak;
+        }
+
+        function onWordFamilyCompleted(completedWord) {
+            const today = new Date().toISOString().slice(0, 10);
+            const stats = getStreakStats();
+            stats.total_solved = (stats.total_solved || 0) + 1;
+
+            if (currentDailyData && completedWord.toLowerCase() === currentDailyData.word.toLowerCase()) {
+                if (stats.last_completed_date !== today) {
+                    const yesterday = new Date(Date.now() - 86400000).toISOString().slice(0, 10);
+                    if (stats.last_completed_date === yesterday) {
+                        stats.streak += 1;
+                    } else {
+                        stats.streak = 1;
+                    }
+                    stats.last_completed_date = today;
+                    saveStreakStats(stats);
+                    renderStreakUI();
+                }
+                const shareBtn = document.getElementById('btn-share-daily');
+                if (shareBtn) shareBtn.style.display = 'inline-block';
+            } else {
+                saveStreakStats(stats);
+            }
+        }
+
+        async function initDailyChallenge() {
+            try {
+                const res = await fetch('/api/daily');
+                const data = await res.json();
+                currentDailyData = data;
+
+                document.getElementById('daily-puzzle-no').textContent = `Puzzle #${data.puzzle_number}`;
+                document.getElementById('daily-date-badge').textContent = `• ${data.date}`;
+                document.getElementById('daily-word-title').textContent = data.word.toUpperCase();
+                document.getElementById('daily-theme-text').textContent = `(${data.theme} • ${data.difficulty})`;
+                document.getElementById('daily-target-count').textContent = data.target_count;
+
+                const stats = getStreakStats();
+                if (stats.last_completed_date === data.date) {
+                    const playBtn = document.getElementById('btn-play-daily');
+                    if (playBtn) playBtn.textContent = '✅ Completed Today';
+                    const shareBtn = document.getElementById('btn-share-daily');
+                    if (shareBtn) shareBtn.style.display = 'inline-block';
+                }
+            } catch (e) {
+                console.error("Could not load daily challenge:", e);
+            }
+            renderStreakUI();
+        }
+
+        function startDailyChallenge() {
+            if (!currentDailyData) return;
+            document.getElementById('word-input').value = currentDailyData.word;
+            submitWordForAnalysis();
+            const card = document.getElementById('analysis-result-banner');
+            if (card) {
+                card.scrollIntoView({ behavior: 'smooth' });
+            }
+        }
+
+        async function shareDailyResults() {
+            if (!currentDailyData) return;
+            const stats = getStreakStats();
+            const text = `AnagramFrenzy Daily #${currentDailyData.puzzle_number} 🔤\nWord: ${currentDailyData.word.toUpperCase()} (${currentDailyData.target_count}/${currentDailyData.target_count} solved) 🟩\n🔥 Streak: ${stats.streak} days\nPlay: http://127.0.0.1:5001`;
+            if (navigator.clipboard) {
+                await navigator.clipboard.writeText(text);
+                alert("Copied your Daily Challenge score to clipboard! 📋\n\n" + text);
+            } else {
+                alert(text);
+            }
+        }
+
+        async function requestWordHint() {
+            if (!activeWordState) return;
+            const res = await fetch('/api/word/hint', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ word: activeWordState.word })
+            });
+            const data = await res.json();
+            const fb = document.getElementById('guess-feedback-box');
+            fb.textContent = data.hint || 'Keep rearranging the tiles!';
+            fb.className = 'feedback-box warn';
+        }
+
+        async function shelveActiveWord() {
+            const wordToShelve = activeWordState ? activeWordState.word : '';
+            const res = await fetch('/api/word/shelve', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ word: wordToShelve })
+            });
+            const data = await res.json();
+            syncSidebarAndStats(data);
+            goToNewWordEntry();
+        }
+
+        async function resumeShelvedWord(word) {
+            const res = await fetch('/api/word/analyze', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ word })
+            });
+            const data = await res.json();
+            if (data.valid) {
+                activeWordState = data;
+                currentLetters = data.word.split('');
+                openGuessingArenaPage();
+            }
+        }
+
+        function syncSidebarAndStats(data) {
+            if (typeof data.total_score === 'number') {
+                document.getElementById('stat-score').textContent = data.total_score;
+            } else if (typeof data.score === 'number') {
+                document.getElementById('stat-score').textContent = data.score;
+            }
+
+            const shelved = data.shelved_list || [];
+            document.getElementById('stat-shelved-count').textContent = shelved.length;
+            const shelfContainer = document.getElementById('shelved-words-list');
+            if (shelved.length === 0) {
+                shelfContainer.innerHTML = `<div style="font-size: 13px; color: var(--text-muted); padding: 6px 0;">No words currently shelved.</div>`;
+            } else {
+                shelfContainer.innerHTML = shelved.map(item => `
+                    <div class="shelf-item">
+                        <div>
+                            <div style="font-weight: 800; font-size: 14px; color: var(--accent-amber); text-transform: uppercase;">${item.word}</div>
+                            <div style="font-size: 12px; color: var(--text-muted);">${item.guessed_count} / ${item.total_count} found (${item.remaining_count} left)</div>
+                        </div>
+                        <button class="btn-amber" style="padding: 6px 12px; font-size: 12px;" onclick="resumeShelvedWord('${item.word}')">
+                            ▶️ Resume
+                        </button>
+                    </div>
+                `).join('');
+            }
+
+            const completed = data.completed_words || [];
+            document.getElementById('stat-completed-count').textContent = completed.length;
+            const compContainer = document.getElementById('completed-words-list');
+            if (completed.length === 0) {
+                compContainer.innerHTML = `<span style="font-size: 13px; color: var(--text-muted);">Complete your first word set to see it here!</span>`;
+            } else {
+                compContainer.innerHTML = completed.map(w => `<span class="completed-tag" onclick="inspectUnlockedWordMeaning('${w}')" title="Click to view meaning">✓ ${w}</span>`).join('');
+            }
+        }
+
+        async function resetGameSession() {
+            const res = await fetch('/api/reset', { method: 'POST' });
+            const data = await res.json();
+            syncSidebarAndStats(data);
+            goToNewWordEntry();
+        }
+
+        window.addEventListener('DOMContentLoaded', async () => {
+            const wIn = document.getElementById('word-input');
+            if (wIn) {
+                wIn.addEventListener('keydown', (e) => {
+                    if (e.key === 'Enter') submitWordForAnalysis();
+                });
+            }
+            const gIn = document.getElementById('guess-input');
+            if (gIn) {
+                gIn.addEventListener('keydown', (e) => {
+                    if (e.key === 'Enter') submitIsomericGuess();
+                });
+            }
+            try {
+                const res = await fetch('/api/stats');
+                const stats = await res.json();
+                syncSidebarAndStats(stats);
+            } catch (e) {
+                console.error(e);
+            }
+            initDailyChallenge();
+        });
+    </script>
+</body>
+</html>

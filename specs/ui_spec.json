@@ -1,0 +1,131 @@
+{
+  "designSystem": {
+    "colors": {
+      "primary": "#3498db",
+      "secondary": "#f1c40f",
+      "background": "#f9f9f9",
+      "surface": "#e5e5e5",
+      "accent": "#e74c3c"
+    },
+    "typography": {
+      "fontFamily": "Open Sans",
+      "fontSize": 16,
+      "fontWeight": 400,
+      "lineHeight": 1.5
+    },
+    "spacing": {
+      "padding": 16,
+      "margin": 24,
+      "borderRadius": 4
+    }
+  },
+  "componentGuidelines": {
+    "interactiveStates": {
+      "empty": {
+        "background": "#fff",
+        "color": "#333"
+      },
+      "loading": {
+        "background": "#fff",
+        "color": "#333"
+      },
+      "error": {
+        "background": "#f9f9f9",
+        "color": "#333"
+      },
+      "success": {
+        "background": "#f9f9f9",
+        "color": "#333"
+      }
+    },
+    "accessibility": {
+      "contrast": {
+        "text": 1.5,
+        "background": 1.5
+      },
+      "keyboardNavigation": true
+    }
+  },
+  "stylingFramework": {
+    "framework": "TailwindCSS",
+    "config": {
+      "colors": {
+        "primary": "#3498db",
+        "secondary": "#f1c40f",
+        "background": "#f9f9f9",
+        "surface": "#e5e5e5",
+        "accent": "#e74c3c"
+      },
+      "typography": {
+        "fontFamily": "Open Sans",
+        "fontSize": 16,
+        "fontWeight": 400,
+        "lineHeight": 1.5
+      },
+      "spacing": {
+        "padding": 16,
+        "margin": 24,
+        "borderRadius": 4
+      }
+    }
+  },
+  "screenBlueprints": [
+    {
+      "name": "Home",
+      "route": "/",
+      "layoutPattern": "responsiveGrid",
+      "keyUIComponents": [
+        {
+          "type": "input",
+          "name": "wordInput"
+        },
+        {
+          "type": "button",
+          "name": "analyzeButton"
+        },
+        {
+          "type": "div",
+          "name": "anagramResult"
+        }
+      ],
+      "userActions": [
+        {
+          "type": "click",
+          "name": "analyzeButton",
+          "event": "analyzeButtonClicked"
+        }
+      ]
+    },
+    {
+      "name": "AnagramResult",
+      "route": "/anagram/:word",
+      "layoutPattern": "responsiveGrid",
+      "keyUIComponents": [
+        {
+          "type": "div",
+          "name": "anagramList"
+        },
+        {
+          "type": "button",
+          "name": "nextButton"
+        },
+        {
+          "type": "button",
+          "name": "shelveButton"
+        }
+      ],
+      "userActions": [
+        {
+          "type": "click",
+          "name": "nextButton",
+          "event": "nextButtonClicked"
+        },
+        {
+          "type": "click",
+          "name": "shelveButton",
+          "event": "shelveButtonClicked"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,97 @@
+{
+  "system_overview": "{\n  \"core_purpose\": \"Build a simple game where users can enter English words and discover the total number of words that can be formed by rearranging the letters of the word, with the option to guess and type all the isomeric words.\",\n  \"target_personas\": [\n    {\n      \"name\": \"Word Enthusiast\",\n      \"context\": \"When using the app to play and learn about word anagrams and isomeric words\",\n      \"motivation\": \"To explore and understand the relationships between words and their anagrams\",\n      \"pain_point\": \"Frustration when trying to find all possible anagrams for a word\"\n    },\n    {\n      \"name\": \"Casual Gamer\",\n      \"context\": \"When using the app to play and compete with friends\",\n      \"motivation\": \"To have fun and challenge themselves with word anagrams and isomeric words\",\n      \"pain_point\": \"Disappointment when unable to find all possible anagrams for a word\"\n    },\n    {\n      \"name\": \"Language Learner\",\n      \"context\": \"When using the app to learn and practice vocabulary\",\n      \"motivation\": \"To improve their language skills and knowledge of word relationships\",\n      \"pain_point\": \"Difficulty when trying to find and remember new words and their anagrams\"\n    }\n  ],\n  \"behavioral_dynamics\": [\n    \"Users enjoy exploring and discovering new words and their relationships\",\n    \"Users are motivated by competition and challenge\",\n    \"Users learn best through interactive and engaging experiences\",\n    \"Users become frustrated when unable to find all possible anagrams\"\n  ],\n  \"core_use_cases\": [\n    \"Enter a word and receive a list of possible anagrams\",\n    \"Attempt to find and list all possible isomeric words for a given word\",\n    \"Complete all possible anagrams for a word to progress to the next word\"\n  ],\n  \"logical_workflows\": [\n    \"Enter word -> Display count of possible anagrams -> User goes to a page where they can try to guess and type all possible isomeric words\",\n    \"> User receives feedback on correct and incorrect words\",\n    \"Complete all possible anagrams -> User progresses to the next word\",\n    \"User becomes frustrated or disengaged -> App offers to shelve the session to go and type a new word similar to the start page.\"\n  ],\n  \"human_edge_cases\": [\n    \"User enters a word with repeated letters or special characters\",\n    \"User is unable to find all possible anagrams for a word due to limited knowledge or skills\",\n    \"User becomes frustrated or disengaged when unable to find all possible anagrams\",\n    \"User experiences technical issues or app crashes\",\n    \"User forgets their progress or needs to resume later\"\n  ],\n  \"success_indicators\": [\n    \"User completes all possible anagrams for a word\",\n    \"User finds and lists all possible isomeric words for a given word\",\n    \"User progresses to the next word with a sense of accomplishment and engagement\",\n    \"User feels motivated and encouraged to continue playing and learning\"\n  ]\n}\n\n[Ceremony 1 Confirmed GTM & Packaging Spec]:\n{\n  \"value_proposition\": \"Helps users discover and explore the vast world of isomeric words by rearranging the letters of their favorite English words, providing an engaging and challenging experience.\",\n  \"consumption_model\": \"Interactive Web UI with a single-click launch, pre-seeded demo data, and clear onboarding within 60 seconds, with optional progression to the next word based on completion of all possible anagrams.\",\n  \"packaging_format\": \"Turnkey WEB_UI package: root '/' serves interactive UI, CLI launcher included, pre-seeded realistic sample data, and /api/export JSON endpoint for easy data sharing, with consideration for edge cases such as repeated letters and special characters.\",\n  \"onboarding_experience\": [\n    \"Zero-config startup: The app launches immediately with pre-seeded demo data, and the user is presented with a clear and concise onboarding message.\",\n    \"Immediate visual feedback: The app displays a loading animation while the demo data is being loaded, and the user is notified when the data is ready.\",\n    \"Clear instructions: The app provides clear instructions on how to use the anagram feature, including examples and tutorials.\",\n    \"Optional tutorial: The app offers an optional tutorial that guides the user through the anagram feature, with interactive examples and feedback.\",\n    \"Progression guidance: The app provides guidance on how to progress to the next word, including options to complete all possible anagrams or move on to the next word.\"\n  ],\n  \"distribution_channels\": [\n    \"Local execution: The app can be run directly from the local file system using a single command.\",\n    \"Portable .zip handoff: The app can be packaged in a portable .zip file for easy distribution and deployment.\",\n    \"Docker containerization: The app can be containerized using Docker for easy deployment and scaling.\",\n    \"Cloud deployment: The app can be deployed to cloud platforms, such as AWS or Google Cloud, for easy access and scalability.\"\n  ],\n  \"gtm_readiness_checklist\": [\n    \"Developers must ensure that all dependencies are properly installed and configured for the WEB_UI package, including consideration for edge cases such as repeated letters and special characters.\",\n    \"UI Designers must create a visually appealing and intuitive interface for the app, with clear and concise instructions for the user, including examples and tutorials.\",\n    \"QA Engineers must thoroughly test the app for functionality, usability, and performance, ensuring that it meets the required standards, including edge cases such as repeated letters and special characters.\",\n    \"DevOps Engineers must ensure that the app is properly packaged and deployed to the desired distribution channels, including cloud deployment options.\",\n    \"Tech Writers must create clear and concise documentation for the app, including user guides, FAQs, and release notes, with consideration for edge cases such as repeated letters and special characters.\"\n  ]\n}\n\n[Ceremony 1 Confirmed First-Principles Spec]:\n{\n  \"core_purpose\": \"Build a simple game where users can enter English words and discover the total number of words that can be formed by rearranging the letters of the word, with the option to guess and type all the isomeric words.\",\n  \"target_personas\": [\n    {\n      \"name\": \"Word Enthusiast\",\n      \"context\": \"When using the app to play and learn about word anagrams and isomeric words\",\n      \"motivation\": \"To explore and understand the relationships between words and their anagrams\",\n      \"pain_point\": \"Frustration when trying to find all possible anagrams for a word\"\n    },\n    {\n      \"name\": \"Casual Gamer\",\n      \"context\": \"When using the app to play and compete with friends\",\n      \"motivation\": \"To have fun and challenge themselves with word anagrams and isomeric words\",\n      \"pain_point\": \"Disappointment when unable to find all possible anagrams for a word\"\n    },\n    {\n      \"name\": \"Language Learner\",\n      \"context\": \"When using the app to learn and practice vocabulary\",\n      \"motivation\": \"To improve their language skills and knowledge of word relationships\",\n      \"pain_point\": \"Difficulty when trying to find and remember new words and their anagrams\"\n    }\n  ],\n  \"behavioral_dynamics\": [\n    \"Users enjoy exploring and discovering new words and their relationships\",\n    \"Users are motivated by competition and challenge\",\n    \"Users learn best through interactive and engaging experiences\",\n    \"Users become frustrated when unable to find all possible anagrams\"\n  ],\n  \"core_use_cases\": [\n    \"Enter a word and receive a list of possible anagrams\",\n    \"Attempt to find and list all possible isomeric words for a given word\",\n    \"Complete all possible anagrams for a word to progress to the next word\"\n  ],\n  \"logical_workflows\": [\n    \"Enter word -> Display count of possible anagrams -> User goes to a page where they can try to guess and type all possible isomeric words\",\n    \"> User receives feedback on correct and incorrect words\",\n    \"Complete all possible anagrams -> User progresses to the next word\",\n    \"User becomes frustrated or disengaged -> App offers to shelve the session to go and type a new word similar to the start page.\"\n  ],\n  \"human_edge_cases\": [\n    \"User enters a word with repeated letters or special characters\",\n    \"User is unable to find all possible anagrams for a word due to limited knowledge or skills\",\n    \"User becomes frustrated or disengaged when unable to find all possible anagrams\",\n    \"User experiences technical issues or app crashes\",\n    \"User forgets their progress or needs to resume later\"\n  ],\n  \"success_indicators\": [\n    \"User completes all possible anagrams for a word\",\n    \"User finds and lists all possible isomeric words for a given word\",\n    \"User progresses to the next word with a sense of accomplishment and engagement\",\n    \"User feels motivated and encouraged to continue playing and learning\"\n  ]\n}",
+  "delivery_medium": "WEB_UI",
+  "tech_stack": {
+    "backend": "Python (Flask)",
+    "frontend": "HTML5 + Modern CSS3 + Vanilla JS SPA",
+    "database": "Local SQLite / Pre-Seeded Domain Module (seed_data.py)"
+  },
+  "required_dependencies": [
+    "flask"
+  ],
+  "components": [
+    {
+      "name": "SeedDataCatalog",
+      "description": "Rich domain dataset, personas, and interactive items in src/seed_data.py"
+    },
+    {
+      "name": "CoreAppService",
+      "description": "Unified Flask application and state controller in src/app.py"
+    },
+    {
+      "name": "InteractiveSPA",
+      "description": "Responsive modern web UI in src/templates/index.html"
+    }
+  ],
+  "data_models": [],
+  "api_endpoints": [
+    {
+      "endpoint": "/",
+      "method": "GET",
+      "description": "Serves interactive Single-Page Application"
+    },
+    {
+      "endpoint": "/health",
+      "method": "GET",
+      "description": "Health check endpoint"
+    },
+    {
+      "endpoint": "/api/catalog",
+      "method": "GET",
+      "description": "Returns full domain catalog, personas, and items"
+    },
+    {
+      "endpoint": "/api/interact",
+      "method": "POST",
+      "description": "Processes user interaction, quiz answer, or workflow action"
+    }
+  ],
+  "api_contracts": [
+    {
+      "endpoint": "/",
+      "method": "GET",
+      "request_schema": {},
+      "response_schema": {
+        "content_type": "text/html"
+      },
+      "service_owner": "CoreAppService"
+    },
+    {
+      "endpoint": "/health",
+      "method": "GET",
+      "request_schema": {},
+      "response_schema": {
+        "status": "healthy"
+      },
+      "service_owner": "CoreAppService"
+    },
+    {
+      "endpoint": "/api/catalog",
+      "method": "GET",
+      "request_schema": {},
+      "response_schema": {
+        "items": "list",
+        "personas": "list"
+      },
+      "service_owner": "CoreAppService"
+    },
+    {
+      "endpoint": "/api/interact",
+      "method": "POST",
+      "request_schema": {
+        "item_id": "str",
+        "action": "str"
+      },
+      "response_schema": {
+        "success": "bool",
+        "feedback": "str"
+      },
+      "service_owner": "CoreAppService"
+    }
+  ],
+  "directory_structure": "src/seed_data.py\nsrc/app.py\nsrc/templates/index.html\ntests/test_app.py\nrequirements.txt\nLaunch_App.command",
+  "design_decisions": [
+    "Self-contained zero-config Flask + seed_data.py architecture for instant local execution",
+    "Single-Page Application with inline CSS/JS to eliminate broken static asset paths"
+  ]
+}

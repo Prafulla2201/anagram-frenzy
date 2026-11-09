@@ -1,0 +1,186 @@
+{
+  "metadata": {
+    "title": "AnagramFrenzy — Isomeric Word Discovery Game",
+    "subtitle": "Enter any English word, discover how many isomeric dictionary words exist, and guess them all or shelve for later!",
+    "value_proposition": "An interactive word puzzle where players enter any English word to see the exact count of valid dictionary anagrams (isomeric words), jump into the guessing arena to type and unlock each rearrangement, and either complete the set or shelve the word for later.",
+    "version": "v1.3"
+  },
+  "personas": [
+    {
+      "id": "p1",
+      "name": "Word Puzzle Enthusiast",
+      "role": "Anagram Solver",
+      "context": "Testing vocabulary depth by finding every single letter rearrangement of challenging words",
+      "motivation": "Unlocking 100% of a word's isomeric family without missing obscure rearrangements",
+      "pain_point": "Not knowing how many valid dictionary anagrams exist for a chosen word"
+    },
+    {
+      "id": "p2",
+      "name": "Casual Vocabulary Explorer",
+      "role": "Flexible Player",
+      "context": "Playing quick rounds and shelving tough words to revisit later",
+      "motivation": "Seamless ability to shelve partially solved words and resume them anytime",
+      "pain_point": "Getting stuck on one hard word with no way to save progress and try another word"
+    }
+  ],
+  "parameters_schema": [
+    {
+      "id": "include_base_word",
+      "name": "Count Base Word",
+      "unit": "mode",
+      "min": 0,
+      "max": 1,
+      "step": 1,
+      "default": 0,
+      "guidance_ranges": "0 = Strict Anagrams (exclude original word), 1 = All Isomeric Permutations (include original word)"
+    }
+  ],
+  "categories": [
+    "Challenge Mode",
+    "Classic Starters",
+    "Quick Rounds"
+  ],
+  "items": [
+    {
+      "id": "word-listen",
+      "name": "LISTEN (Classic 6-Letter Isomeric Family)",
+      "word": "listen",
+      "category": "Classic Starters",
+      "difficulty": "Medium",
+      "summary": "Rearrange the 6 letters of LISTEN to form all 5 other valid dictionary words.",
+      "key_facts": [
+        "Signature: eilnst",
+        "Other isomeric words: silent, enlist, tinsel, inlets, elints"
+      ],
+      "persona_notes": "Ideal starter word for Word Puzzle Enthusiasts.",
+      "preset_params": {
+        "include_base_word": 0
+      },
+      "quiz_question": "Which of these is a valid dictionary anagram of LISTEN?",
+      "quiz_options": [
+        "silent",
+        "linens",
+        "stream",
+        "stolen"
+      ],
+      "quiz_answer": "silent",
+      "quiz_explanation": "SILENT uses the exact letters E-I-L-N-S-T."
+    },
+    {
+      "id": "word-earth",
+      "name": "EARTH (5-Letter Isomeric Family)",
+      "word": "earth",
+      "category": "Quick Rounds",
+      "difficulty": "Easy",
+      "summary": "Rearrange EARTH into its other valid 5-letter English dictionary words.",
+      "key_facts": [
+        "Signature: aehrt",
+        "Includes: heart, hater, rathe"
+      ],
+      "persona_notes": "Great for quick vocabulary warm-ups.",
+      "preset_params": {
+        "include_base_word": 0
+      },
+      "quiz_question": "Which of these is an isomeric word for EARTH?",
+      "quiz_options": [
+        "heart",
+        "heard",
+        "three",
+        "reach"
+      ],
+      "quiz_answer": "heart",
+      "quiz_explanation": "HEART is formed by rearranging the exact letters of EARTH."
+    },
+    {
+      "id": "word-stop",
+      "name": "STOP (4-Letter High-Density Family)",
+      "word": "stop",
+      "category": "Quick Rounds",
+      "difficulty": "Easy",
+      "summary": "A 4-letter word with 5 additional common English rearrangements.",
+      "key_facts": [
+        "Signature: opst",
+        "Includes: tops, pots, spot, post, opts"
+      ],
+      "persona_notes": "Fast and rewarding 4-letter anagram set.",
+      "preset_params": {
+        "include_base_word": 0
+      },
+      "quiz_question": "Which word is an anagram of STOP?",
+      "quiz_options": [
+        "spot",
+        "step",
+        "shop",
+        "shot"
+      ],
+      "quiz_answer": "spot",
+      "quiz_explanation": "SPOT rearranges S-T-O-P."
+    },
+    {
+      "id": "word-least",
+      "name": "LEAST (5-Letter Power Family)",
+      "word": "least",
+      "category": "Challenge Mode",
+      "difficulty": "Hard",
+      "summary": "One of the richest 5-letter anagram clusters in English.",
+      "key_facts": [
+        "Signature: aelst",
+        "Includes: slate, stale, steal, tales, teals, tesla"
+      ],
+      "persona_notes": "Perfect for testing shelving and resuming.",
+      "preset_params": {
+        "include_base_word": 0
+      },
+      "quiz_question": "Which word is an isomeric rearrangement of LEAST?",
+      "quiz_options": [
+        "slate",
+        "lease",
+        "Sleet",
+        "table"
+      ],
+      "quiz_answer": "slate",
+      "quiz_explanation": "SLATE uses the exact letters A-E-L-S-T."
+    },
+    {
+      "id": "word-caret",
+      "name": "CARET (5-Letter Precision Set)",
+      "word": "caret",
+      "category": "Challenge Mode",
+      "difficulty": "Medium",
+      "summary": "Rearrange C-A-R-E-T into cater, crate, react, trace, and more.",
+      "key_facts": [
+        "Signature: acert",
+        "Includes: cater, crate, react, trace, recta"
+      ],
+      "persona_notes": "Balanced medium-difficulty puzzle.",
+      "preset_params": {
+        "include_base_word": 0
+      },
+      "quiz_question": "Which word is an anagram of CARET?",
+      "quiz_options": [
+        "react",
+        "chart",
+        "craft",
+        "clear"
+      ],
+      "quiz_answer": "react",
+      "quiz_explanation": "REACT uses the exact letters A-C-E-R-T."
+    }
+  ],
+  "stats": {
+    "score": 0,
+    "interactions": 0,
+    "correct_count": 0,
+    "completed_count": 0,
+    "total_items": 5,
+    "progress": {
+      "completed": 0,
+      "total": 5,
+      "Completed_words": 0,
+      "shelved_words": 0
+    },
+    "current_word": null,
+    "completed_words": [],
+    "shelved_list": []
+  }
+}

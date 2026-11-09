@@ -1,0 +1,45 @@
+name: CI/CD
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.9'
+
+      - name: Install dependencies
+        run: |
+          pip install --no-cache-dir -r requirements.txt
+
+      - name: Build and test
+        run: |
+          python -m unittest discover -s tests -p 'test_*'
+
+      - name: Build and push image
+        run: |
+          docker build -t my-game .
+          docker tag my-game:latest $GITHUB_REPOSITORY/my-game:latest
+          docker push $GITHUB_REPOSITORY/my-game:latest
+
+      - name: Deploy to production
+        uses: appleboy/ssh-action@v1
+        with:
+          host: $GITHUB_REPOSITORY
+          username: $GITHUB_USERNAME
+          password: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            docker pull $GITHUB_REPOSITORY/my-game:latest
+            docker run -d --name my-game $GITHUB_REPOSITORY/my-game:latest

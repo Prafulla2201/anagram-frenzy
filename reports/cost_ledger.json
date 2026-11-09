@@ -1,0 +1,10 @@
+{
+  "project_id": null,
+  "budget_limit_usd": 2.0,
+  "total_cost_usd": 0.0,
+  "total_input_tokens": 0,
+  "total_output_tokens": 0,
+  "calls_count": 0,
+  "recent_calls": [],
+  "unhealthy_providers": {}
+}
