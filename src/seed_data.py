@@ -623,7 +623,13 @@ def _build_dictionary_and_anagram_index():
             all_dict_words.add(cleaned)
             puzzle_targets.add(cleaned)
 
-    # 3. Load system dictionary
+    # 3. All common everyday 20k English words are ALWAYS recognized valid words & puzzle targets
+    for w in COMMON_20K_WORDS:
+        if w.isalpha() and 2 <= len(w) <= 12:
+            all_dict_words.add(w)
+            puzzle_targets.add(w)
+
+    # 4. Optional: Load extended system dictionary if present on host (macOS/Linux)
     dict_paths = ["/usr/share/dict/words", "/usr/dict/words"]
     for dp in dict_paths:
         if os.path.exists(dp):
